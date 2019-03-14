@@ -1,13 +1,15 @@
-using System.IO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using System.Threading.Tasks;
 using PuppeteerSharp;
-using RazorLight;
+using RazorEngine;
+using RazorEngine.Templating;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace PDFGeneration
 {
@@ -19,17 +21,20 @@ namespace PDFGeneration
 			log.LogInformation("C# HTTP trigger function processed a request.");
 
 			string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-			dynamic data = JsonConvert.DeserializeObject(requestBody);
+			List<CallObject> data = JsonConvert.DeserializeObject<List<CallObject>>(requestBody);
 
 			try
 			{
-				var engine = new RazorLightEngineBuilder()
-					.UseMemoryCachingProvider()
-					.Build();
+				string viewResult = "";
 
-				string template = "<div>Hello, @Model.Name. Welcome to RazorLight repository</div>";
+				foreach (var page in data)
+				{
+					string template = File.ReadAllText(page.TemplateName);
 
-				string viewResult = await engine.CompileRenderAsync("templateKey", template, data);
+					viewResult += Engine.Razor.RunCompile(template, "testTemp", modelType: null, model: (object)page.Data);
+				}
+
+				await new BrowserFetcher().DownloadAsync(BrowserFetcher.DefaultRevision);
 
 				var browser = await Puppeteer.LaunchAsync(new LaunchOptions
 				{
@@ -46,8 +51,11 @@ namespace PDFGeneration
 			catch (System.Exception ex)
 			{
 				log.LogError(ex.Message);
+				var errorMessage = new ContentResult();
+				errorMessage.Content = ex.Message;
+				errorMessage.StatusCode = 500;
+				return errorMessage;
 			}
-			return null;
 		}
 	}
 }
