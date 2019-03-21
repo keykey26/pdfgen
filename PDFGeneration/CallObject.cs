@@ -6,7 +6,7 @@ namespace PDFGeneration
 {
 	public class CallObject
 	{
-		public string TemplateName { get; set; }
-		public object Data { get; set; }
+		public string FileName { get; set; }
+		public List<PageData> Pages { get; set; }
 	}
 }
