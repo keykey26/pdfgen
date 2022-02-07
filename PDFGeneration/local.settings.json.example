@@ -1,0 +1,6 @@
+{
+  "StorageAccountName": "",
+  "StorageAccountKey": "",
+  "StorageAccountContainer": "pdf-templates",
+  "RemoteHeadlessChrome": "web socket url"
+}

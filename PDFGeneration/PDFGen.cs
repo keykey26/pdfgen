@@ -10,13 +10,12 @@ using Newtonsoft.Json;
 using PuppeteerSharp;
 using RazorEngine;
 using RazorEngine.Templating;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
 namespace PDFGeneration
 {
-	public static class PDFGen
+    public static class PDFGen
 	{
 		[FunctionName("PDFGen")]
 		public static async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req, ILogger log, Microsoft.Azure.WebJobs.ExecutionContext context)
