@@ -1,0 +1,1 @@
+Please set up a isssue if you are not able to fix it yourself or if there are any improvments you see. If you fix any issues yourself plaese raise a puillreques tiwht your chages and I will review it. 
